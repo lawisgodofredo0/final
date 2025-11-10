@@ -22,7 +22,8 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     const { email, password } = form;
-    if (!email || !password) return Alert.alert("Error", "Enter email & password");
+    if (!email || !password)
+      return Alert.alert("Error", "Enter email & password");
 
     try {
       const user = await db.getFirstAsync(
@@ -116,6 +117,19 @@ const LoginScreen = ({ navigation }) => {
               style={{ flex: 1, marginTop: 10 }}
             />
 
+            {/* 🆕 Added Button to go to Comments */}
+            <View style={{ marginVertical: 10 }}>
+              <Button
+                title="Go to Comments"
+                color="#28a745"
+                onPress={() =>
+                  navigation.navigate("Comments", {
+                    currentUser: loggedInUser,
+                  })
+                }
+              />
+            </View>
+
             <View style={{ marginVertical: 10 }}>
               <Button
                 title="Logout"
@@ -135,9 +149,25 @@ const LoginScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   loginContainer: { flex: 1, justifyContent: "center" },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 15, textAlign: "center" },
-  subtitle: { fontSize: 18, fontWeight: "500", marginBottom: 10, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 15 },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 15,
+  },
   link: { color: "#007bff", textAlign: "center", marginTop: 12, fontSize: 16 },
   userRow: {
     padding: 12,

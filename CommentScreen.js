@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -9,103 +9,118 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 
 const CommentScreen = ({ route }) => {
-  const { user } = route.params;
   const db = useSQLiteContext();
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
-  const flatListRef = useRef();
 
-  // Create comments table if it doesn't exist
-  const createTable = async () => {
-    await db.execAsync(`
-      CREATE TABLE IF NOT EXISTS comments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user TEXT NOT NULL,
-        comment TEXT NOT NULL
-      );
-    `);
-  };
+  // Get current logged user from route params
+  const currentUser = route.params?.currentUser || { name: "Guest" };
+
+  // Load comments when screen opens
+  useEffect(() => {
+    loadComments();
+  }, []);
 
   const loadComments = async () => {
-    const results = await db.getAllAsync(
-      "SELECT * FROM comments ORDER BY id ASC"
-    );
-    setComments(results);
-
-    // Scroll to bottom after loading
-    setTimeout(() => {
-      flatListRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    try {
+      const result = await db.getAllAsync(
+        "SELECT * FROM comments ORDER BY created_at DESC"
+      );
+      setComments(result);
+    } catch (error) {
+      console.error("Error loading comments:", error);
+    }
   };
 
   const addComment = async () => {
-    if (!comment.trim()) return;
-    await db.runAsync(
-      "INSERT INTO comments (user, comment) VALUES (?, ?)",
-      [user, comment]
-    );
-    setComment("");
-    loadComments();
+    if (!comment.trim()) {
+      Alert.alert("Error", "Please write something.");
+      return;
+    }
+
+    try {
+      await db.runAsync("INSERT INTO comments (user, comment) VALUES (?, ?)", [
+        currentUser.name,
+        comment,
+      ]);
+      setComment("");
+      loadComments(); // refresh list
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
   };
 
-  useEffect(() => {
-    createTable().then(() => loadComments());
-  }, []);
+  const deleteComment = async (id) => {
+    try {
+      await db.runAsync("DELETE FROM comments WHERE id = ?", [id]);
+      loadComments();
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
+  const renderComment = ({ item }) => (
+    <View style={styles.commentItem}>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.user}>{item.user}</Text>
+        <Text style={styles.text}>{item.comment}</Text>
+        <Text style={styles.time}>{item.created_at}</Text>
+      </View>
+      {item.user === currentUser.name && (
+        <Button
+          title="🗑"
+          color="#dc3545"
+          onPress={() => deleteComment(item.id)}
+        />
+      )}
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        style={{ flex: 1, padding: 16 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <FlatList
-          ref={flatListRef}
-          data={comments}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.comment}>
-              <Text style={styles.user}>{item.user}:</Text>
-              <Text>{item.comment}</Text>
-            </View>
-          )}
-          contentContainerStyle={{ padding: 10 }}
-        />
+        <Text style={styles.title}>Community Comments</Text>
 
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Add a comment"
+            placeholder="Write a comment..."
             value={comment}
             onChangeText={setComment}
           />
-          <Button title="Post" onPress={addComment} />
+          <Button title="Post" onPress={addComment} color="#007bff" />
         </View>
+
+        <FlatList
+          data={comments}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderComment}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  comment: {
-    marginBottom: 8,
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    borderRadius: 6,
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
   },
-  user: { fontWeight: "bold", marginBottom: 2 },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-    backgroundColor: "#f9f9f9",
+    marginBottom: 15,
   },
   input: {
     flex: 1,
@@ -114,7 +129,26 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
-    backgroundColor: "#fff",
+  },
+  commentItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 10,
+    marginVertical: 6,
+  },
+  user: {
+    fontWeight: "bold",
+    color: "#007bff",
+  },
+  text: {
+    fontSize: 16,
+    marginVertical: 4,
+  },
+  time: {
+    fontSize: 12,
+    color: "#888",
   },
 });
 
