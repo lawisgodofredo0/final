@@ -1,111 +1,103 @@
-import React, { useEffect, useState, useCallback } from "react";
+// UserListScreen.js
+import React, { useEffect, useState } from "react";
 import {
+  SafeAreaView,
   FlatList,
   Text,
   View,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 
-const UserList = () => {
+const UserListScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const db = useSQLiteContext();
 
-  const loadUsers = useCallback(async () => {
+  // Load users from auth_users table
+  const loadUsers = async () => {
     try {
       setIsLoading(true);
-      const results = await db.getAllAsync("SELECT * FROM users ORDER BY id DESC");
+      const results = await db.getAllAsync("SELECT * FROM auth_users");
       setUsers(results);
     } catch (error) {
       console.error("Database error:", error);
     } finally {
       setIsLoading(false);
-      setIsRefreshing(false);
     }
-  }, [db]);
-
-  const onRefresh = async () => {
-    setIsRefreshing(true);
-    await loadUsers();
   };
 
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+    const unsubscribe = navigation.addListener("focus", loadUsers);
+    loadUsers(); // also load on mount
+    return unsubscribe;
+  }, [navigation]);
 
-  if (isLoading && !isRefreshing) {
+  if (isLoading) {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#007bff" />
+        <Text>Loading users...</Text>
       </View>
     );
   }
 
   return (
-    <FlatList
-      data={users}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.userCard}>
-          <Text style={styles.name}>{`${item.firstName} ${item.lastName}`}</Text>
-          <Text style={styles.email}>{item.email}</Text>
-          <Text style={styles.phone}>{item.phone}</Text>
-        </View>
-      )}
-      ListEmptyComponent={
-        <Text style={styles.emptyText}>No users found. Try adding one!</Text>
-      }
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-          tintColor="#007bff"
-        />
-      }
-      contentContainerStyle={
-        users.length === 0 && { flex: 1, justifyContent: "center" }
-      }
-    />
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={users}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={loadUsers}
+            tintColor="#007bff"
+          />
+        }
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.userCard}
+            onPress={() => navigation.navigate("Messenger", { user: item })}
+          >
+            <Text style={styles.userName}>{item.name}</Text>
+            <Text style={styles.userEmail}>{item.email}</Text>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No users found.</Text>
+        }
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#fff" },
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   userCard: {
-    padding: 16,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    padding: 15,
+    marginHorizontal: 15,
+    marginVertical: 6,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
-  name: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  email: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 2,
-  },
-  phone: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 2,
-  },
+  userName: { fontSize: 18, fontWeight: "600", color: "#000" },
+  userEmail: { fontSize: 15, color: "#555" },
   emptyText: {
     textAlign: "center",
-    marginTop: 20,
-    color: "#999",
+    marginTop: 30,
+    color: "#888",
     fontSize: 16,
   },
 });
 
-export default UserList;
+export default UserListScreen;

@@ -5,12 +5,11 @@ import {
   View,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
-  Alert,
   TouchableOpacity,
-  Platform,
   FlatList,
+  StyleSheet,
+  Platform,
+  Alert,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 
@@ -72,9 +71,9 @@ const LoginScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
-        style={{ flex: 1, padding: 20 }}
+        style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         {!loggedInUser ? (
@@ -84,6 +83,7 @@ const LoginScreen = ({ navigation }) => {
             <TextInput
               style={styles.input}
               placeholder="Email"
+              placeholderTextColor="#999"
               autoCapitalize="none"
               keyboardType="email-address"
               value={form.email}
@@ -92,16 +92,20 @@ const LoginScreen = ({ navigation }) => {
             <TextInput
               style={styles.input}
               placeholder="Password"
+              placeholderTextColor="#999"
               secureTextEntry
               value={form.password}
               onChangeText={(text) => setForm({ ...form, password: text })}
             />
 
-            <View style={{ marginVertical: 10 }}>
-              <Button title="Login" onPress={handleLogin} color="#007bff" />
-            </View>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <Text style={styles.loginButtonText}>Login</Text>
+            </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Register")}
+              style={{ marginTop: 15 }}
+            >
               <Text style={styles.link}>Don’t have an account? Register</Text>
             </TouchableOpacity>
           </View>
@@ -117,29 +121,33 @@ const LoginScreen = ({ navigation }) => {
               style={{ flex: 1, marginTop: 10 }}
             />
 
-            {/* 🆕 Added Button to go to Comments */}
-            <View style={{ marginVertical: 10 }}>
-              <Button
-                title="Go to Comments"
-                color="#28a745"
-                onPress={() =>
-                  navigation.navigate("Comments", {
-                    currentUser: loggedInUser,
-                  })
-                }
-              />
-            </View>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#28a745" }]}
+              onPress={() =>
+                navigation.navigate("Comments", { currentUser: loggedInUser })
+              }
+            >
+              <Text style={styles.actionButtonText}>Go to Comments</Text>
+            </TouchableOpacity>
 
-            <View style={{ marginVertical: 10 }}>
-              <Button
-                title="Logout"
-                onPress={() => {
-                  setLoggedInUser(null);
-                  setOtherUsers([]);
-                }}
-                color="#dc3545"
-              />
-            </View>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#007bff" }]}
+              onPress={() =>
+                navigation.navigate("AboutMe", { currentUser: loggedInUser })
+              }
+            >
+              <Text style={styles.actionButtonText}>About Me</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#dc3545" }]}
+              onPress={() => {
+                setLoggedInUser(null);
+                setOtherUsers([]);
+              }}
+            >
+              <Text style={styles.actionButtonText}>Logout</Text>
+            </TouchableOpacity>
           </View>
         )}
       </KeyboardAvoidingView>
@@ -148,35 +156,100 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  loginContainer: { flex: 1, justifyContent: "center" },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f2f8ff",
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  loginContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 15,
+    color: "#0084ff",
     textAlign: "center",
+    marginBottom: 25,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: "500",
     marginBottom: 10,
     textAlign: "center",
+    color: "#333",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
+    borderColor: "#cde4ff",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    padding: 14,
     marginBottom: 15,
+    fontSize: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  link: { color: "#007bff", textAlign: "center", marginTop: 12, fontSize: 16 },
-  userRow: {
-    padding: 12,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
+  loginButton: {
+    backgroundColor: "#0084ff",
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center",
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
-  userName: { fontSize: 16, fontWeight: "600" },
-  userEmail: { fontSize: 14, color: "#555" },
+  loginButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  link: {
+    color: "#007bff",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  userRow: {
+    padding: 15,
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#005bb5",
+  },
+  userEmail: {
+    fontSize: 14,
+    color: "#555",
+  },
+  actionButton: {
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginVertical: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  actionButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
 
 export default LoginScreen;

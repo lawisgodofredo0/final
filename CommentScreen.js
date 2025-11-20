@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Image,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 
@@ -66,10 +67,13 @@ const CommentScreen = ({ route }) => {
 
   const renderComment = ({ item }) => (
     <View style={styles.commentItem}>
+      <Image source={require("./assets/kens.jpg")} style={styles.avatar} />
       <View style={{ flex: 1 }}>
         <Text style={styles.user}>{item.user}</Text>
         <Text style={styles.text}>{item.comment}</Text>
-        <Text style={styles.time}>{item.created_at}</Text>
+        <Text style={styles.time}>
+          {item.created_at ? new Date(item.created_at).toLocaleString() : ""}
+        </Text>
       </View>
       {item.user === currentUser.name && (
         <Button
@@ -87,8 +91,10 @@ const CommentScreen = ({ route }) => {
         style={{ flex: 1, padding: 16 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+
         <Text style={styles.title}>Community Comments</Text>
 
+        {/* Input */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -99,6 +105,7 @@ const CommentScreen = ({ route }) => {
           <Button title="Post" onPress={addComment} color="#007bff" />
         </View>
 
+        {/* Comments list */}
         <FlatList
           data={comments}
           keyExtractor={(item) => item.id.toString()}
@@ -111,6 +118,13 @@ const CommentScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  headerImage: {
+    width: 80,
+    height: 80,
+    alignSelf: "center",
+    marginBottom: 10,
+    borderRadius: 40,
+  },
   title: {
     fontSize: 22,
     fontWeight: "bold",
@@ -137,6 +151,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     marginVertical: 6,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    borderRadius: 20,
   },
   user: {
     fontWeight: "bold",
