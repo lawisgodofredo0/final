@@ -4,11 +4,11 @@
     "slug": "mymessenger",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/kens.jpg",
+    "icon": "./assets/di.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/kens.jpg",
+      "image": "./assets/di.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/di.jpg",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.lawisgodofredo.mymessenger"
+      "package": "com.dietherparoginog.mymessenger"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/di.jpg"
     },
     "plugins": [
       "expo-sqlite"
@@ -34,6 +34,6 @@
         "projectId": "f6ffc769-a198-488d-8f0d-0a148e91b19a"
       }
     },
-    "owner": "lawisgodofredo"
+    "owner": "dietherparoginog"
   }
 }

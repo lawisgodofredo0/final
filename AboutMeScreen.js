@@ -24,12 +24,12 @@ export default function AboutMeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Image
-          source={require("./assets/kens.jpg")}
+          source={require("./assets/di.jpg")}
           style={styles.profileImage}
         />
       </Animated.View>
 
-      <Text style={styles.name}>Godofredo Lawis</Text>
+      <Text style={styles.name}>Diether Paroginog</Text>
 
       {/* ⭐ Course / Year / Section */}
       <Text style={styles.course}>

@@ -104,7 +104,7 @@ const MessengerScreen = ({ route, navigation }) => {
         style={[styles.messageRow, isMe ? styles.rowRight : styles.rowLeft]}
       >
         {!isMe && (
-          <Image source={require("./assets/p.jpg")} style={styles.avatar} />
+          <Image source={require("./assets/di.jpg")} style={styles.avatar} />
         )}
 
         <View
@@ -119,7 +119,7 @@ const MessengerScreen = ({ route, navigation }) => {
         </View>
 
         {isMe && (
-          <Image source={require("./assets/p.jpg")} style={styles.avatar} />
+          <Image source={require("./assets/di.jpg")} style={styles.avatar} />
         )}
       </View>
     );

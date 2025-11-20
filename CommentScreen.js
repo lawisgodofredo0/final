@@ -67,7 +67,7 @@ const CommentScreen = ({ route }) => {
 
   const renderComment = ({ item }) => (
     <View style={styles.commentItem}>
-      <Image source={require("./assets/kens.jpg")} style={styles.avatar} />
+      <Image source={require("./assets/di.jpg")} style={styles.avatar} />
       <View style={{ flex: 1 }}>
         <Text style={styles.user}>{item.user}</Text>
         <Text style={styles.text}>{item.comment}</Text>
