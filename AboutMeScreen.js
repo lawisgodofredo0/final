@@ -24,20 +24,32 @@ export default function AboutMeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
         <Image
-          source={require("./assets/di.jpg")}
+          source={require("./assets/ara.png")}
           style={styles.profileImage}
         />
       </Animated.View>
 
-      <Text style={styles.name}>Diether Paroginog</Text>
+      <Text style={styles.name}>Aramichelle Doydora</Text>
 
-      {/* ⭐ Course / Year / Section */}
+      {/* Course / Year */}
       <Text style={styles.course}>
         BSIT – 3rd Year, Trinidad Municipal College
       </Text>
 
-      <Text style={styles.title}>About Me</Text>
+      {/* ⭐ Submitted Info Section */}
+      <View style={styles.submittedBox}>
+        <Text style={styles.submittedText}>
+          <Text style={{ fontWeight: "bold" }}>Submitted By:</Text> Aramichelle
+          Doydora
+        </Text>
 
+        <Text style={styles.submittedText}>
+          <Text style={{ fontWeight: "bold" }}>Submitted To:</Text> (Instructor
+          Name)
+        </Text>
+      </View>
+      <Text style={styles.title}>About Me</Text>
+      {/* ⭐ About Me Paragraph */}
       <View style={styles.aboutMeBox}>
         <Text style={styles.description}>
           I'm currently a third-year college student at Trinidad Municipal
@@ -58,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f8ff",
   },
 
-  // ⭐ Square with rounded edges + shadow
+  // ⭐ Profile Image (Square w/ Rounded Corners)
   profileImage: {
     width: 200,
     height: 200,
@@ -79,7 +91,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  // ⭐ Course Text
   course: {
     fontSize: 16,
     fontStyle: "italic",
@@ -92,6 +103,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#0084ff",
     marginBottom: 20,
+  },
+
+  // ⭐ Submitted Box Styling
+  submittedBox: {
+    backgroundColor: "#e9f2ff",
+    padding: 15,
+    borderRadius: 10,
+    width: "95%",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#bcd9ff",
+  },
+
+  submittedText: {
+    fontSize: 16,
+    color: "#005bb5",
+    marginBottom: 5,
+    textAlign: "center",
   },
 
   aboutMeBox: {

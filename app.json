@@ -4,11 +4,11 @@
     "slug": "mymessenger",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/di.jpg",
+    "icon": "./assets/ara.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/di.jpg",
+      "image": "./assets/ara.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/di.jpg",
+        "foregroundImage": "./assets/ara.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.dietherparoginog.mymessenger"
+      "package": "com.aramichelle.mymessenger"
     },
     "web": {
-      "favicon": "./assets/di.jpg"
+      "favicon": "./assets/ara.png"
     },
     "plugins": [
       "expo-sqlite"
@@ -34,6 +34,6 @@
         "projectId": "f6ffc769-a198-488d-8f0d-0a148e91b19a"
       }
     },
-    "owner": "dietherparoginog"
+    "owner": "aramichelle"
   }
 }
